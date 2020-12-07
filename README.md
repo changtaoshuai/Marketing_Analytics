@@ -1,7 +1,7 @@
 ## Marketing Analytics
 
 
-``` ruby
+``` python 
 import dash
 from dash.dependencies import Input, Output, State, MATCH 
 import dash_table 
