@@ -1,7 +1,7 @@
 ## Marketing Analytics
 
 
-```python
+```python color: "#3572A5"
 import dash
 from dash.dependencies import Input, Output, State, MATCH 
 import dash_table 
