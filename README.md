@@ -341,3 +341,4 @@ Besides the models I showed above, I also ran other models such as Ridge regress
 
 ![](/images/results.png)
 
+From the results above, Lasso is the best model. Other models such as Ridge regression, Linear regression, SVC and Tree work well too. 
