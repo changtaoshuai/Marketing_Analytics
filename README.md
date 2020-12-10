@@ -55,7 +55,7 @@ The final data set looks like this (2389 rows in total):
 
 Now, web scraping is completed!
 
-
+# Part 2: Data Analysis
 
 
 In this part, I will use the data set I scraped from OpenTable for data analysis. First, import packages for data visualization.
