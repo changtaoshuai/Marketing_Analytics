@@ -20,7 +20,7 @@ url = 'https://www.opentable.com/r/fogo-de-chao-brazilian-steakhouse-boston?orig
 driver.get(url)
 ```
 
-Next, I use x path to get each individual review and **Beautifulsoup** to transform the data structure. After I look into the data structure and find common patterns, I use regular expression to extract review text, ratings (stars), and dine in time.
+Next, I use x path to get each individual review and **Beautifulsoup** to transform the data structure. After I look into the data structure and find common patterns, I use regular expression to extract review text, ratings (stars), and dine in time. For example, review text follows *style=""* and is followed by *</p>*. So I want to extract everything in the middle ((.*?)). 
 
 ```python
 Review = []
@@ -345,4 +345,4 @@ Besides the models I showed above, I also ran other models such as Ridge regress
 
 ![](/images/results.png)
 
-From the results above, Lasso is the best model. Other models such as Ridge regression, Linear regression, SVC and Tree work well too. 
+From the results above, Lasso is the best model with an accuray of 0.935. Other models such as Ridge regression, Linear regression, SVC and Tree work well too. 
