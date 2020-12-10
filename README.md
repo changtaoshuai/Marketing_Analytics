@@ -1,6 +1,6 @@
 # Sentiment Analysis                                              
 
-This project combined Web scraping, data visualization, and prediction models. In the first part, I chose one of my favoraite restaurants *Fogo de Chao (Botson)** on Opentable, and scraped its reviews. In the second part, based on Fogo de Chao's reviews, visualization and prediction models are presented. Finally, comparing among models, I found `Lasso` to be the best model. 
+This project combined Web scraping, data visualization, and prediction models. In the first part, I chose one of my favoraite restaurants **Fogo de Chao (Botson)** on Opentable, and scraped its reviews. In the second part, based on Fogo de Chao's reviews, visualization and prediction models are presented. Finally, comparing among models, I found `Lasso` to be the best model. 
 
 ## Part 1: Web Scraping
 
