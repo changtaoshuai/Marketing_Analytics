@@ -309,38 +309,22 @@ test_score_model_off1['Lasso'] = right_pred_off1(cm_la)
 #### Decision tree
 
 ```python
-criterion_chosen     = ['entropy','gini']
-max_depth_tree = list(range(2,11))
-results_list         = []
-for i in criterion_chosen:
-    for depth in max_depth_tree:
-        dtree    = tree.DecisionTreeClassifier(
-                criterion    = i,
-                max_depth    = depth).fit(X_train, Y_train)
-
-        results_list.append(
-                np.concatenate(
-                        [
-                                dtree.predict(X_train),
-                                dtree.predict(X_valid),
-                                dtree.predict(X_test)
-                        ]).round().astype(int)
-                )
-
-df_results_tree              = pd.DataFrame(results_list).transpose()
-df_results_tree['inx_train'] = inx_train.to_list()
-df_results_tree['inx_valid'] = inx_valid.to_list()
-df_results_tree['inx_test']  = inx_test.to_list()
-accuracy_tree = []
-for i in range(18):
-    cm_tree = confusion_matrix(df_results_tree[df_results_tree.inx_valid][i],Y_valid)
-    accuracy_tree.append(right_pred_off1(cm_tree))
+accuracy_tree         = []
+criterion_list     = ['entropy','gini']
+max_depth_list = list(range(2,11))
+for i in criterion_list:
+    for depth in max_depth_list:
+        dtree    = tree.DecisionTreeClassifier(criterion    = i, 
+                                               max_depth    = depth).fit(X_train, Y_train)
+        cm_tree = confusion_matrix(dtree.predict(X_valid),Y_valid)
+        accuracy_tree.append(right_pred_off1(cm_tree))
 
 tree_best = np.argmax(accuracy_tree)
-dtree    = tree.DecisionTreeClassifier(criterion= criterion_chosen[tree_best // 9],
-                                     max_depth = max_depth_tree[tree_best % 9]).fit(X_train, Y_train)
+dtree    = tree.DecisionTreeClassifier(criterion= criterion_list[tree_best // len(max_depth_list)], 
+                                     max_depth = max_depth_list[tree_best % len(max_depth_list)]).fit(X_train, Y_train)
 cm_tree = confusion_matrix(dtree.predict(X_test),Y_test)
-test_score_model_off1['Tree'] = right_pred_off1(cm_tree)
+
+test_score_model_off1['Decision Tree'] = round(right_pred_off1(cm_tree),3)
 ```
 
 #### Model results
