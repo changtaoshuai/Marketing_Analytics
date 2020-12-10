@@ -1,3 +1,5 @@
+# Part 1: Web Scraping
+
 In this section, I perform web scraping on OpenTable for restaurant reviews. Here I chose Fogo de Chao in Boston.
 
 Here is an example of reviews:
