@@ -328,7 +328,7 @@ test_score_model_off1['Decision Tree'] = round(right_pred_off1(cm_tree),3)
 
 #### Model results
 
-Besides these above models, I also ran additional models, including Ridge regression, KNN, Naive Bayes, Random forest and SVC. I placed all of these models, along with their corresponding accuracy scores, into a dictionary **test_score_model_off1**. In the end, by comparing scores among models, I found that the best model in this case was Lasso, with an accuracy of 0.921. However, other models such as Ridge regression, Linear regression, SVC and Tree worked well too.
+Besides these above models, I also ran additional models, including Ridge regression, KNN, Naive Bayes, Random forest and SVC. I placed all of these models, along with their corresponding accuracy scores, into a dictionary **test_score_model_off1**. In the end, by comparing scores among models, I found that the best model in this case was Lasso, with an accuracy of 0.921. However, other models such as Ridge regression, Linear regression, and SVC worked well too.
 
 ![](/images/results.jpeg)
 
