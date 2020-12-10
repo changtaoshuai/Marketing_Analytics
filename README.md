@@ -253,7 +253,7 @@ df.loc[df['clf_hat'] > 5,'clf_hat'] = 5
 df.loc[df['clf_hat'] < 1,'clf_hat'] = 1
 cm_clf = confusion_matrix(Y_test, df['clf_hat'][inx_test])
 right_pred_off1(cm_clf)
-test_score_model_off1['Linear Model'] = right_pred_off1(cm_clf)
+test_score_model_off1['Linear Model'] = round(right_pred_off1(cm_clf),3)
 
 ```
 
@@ -303,7 +303,7 @@ for i in range(len(la_final)):
 
 cm_la = confusion_matrix(Y_test, la_final[inx_test])
 
-test_score_model_off1['Lasso'] = right_pred_off1(cm_la)
+test_score_model_off1['Lasso'] = round(right_pred_off1(cm_la),3)
 ```
 
 #### Decision tree
