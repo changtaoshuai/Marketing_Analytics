@@ -1,12 +1,12 @@
 # Sentiment Analysis                                              
 
-This project combined Web scraping, data visualization, and prediction models. In the first part, I chose one of my favoraite restaurants **Fogo de Chao (Botson)** on Opentable, and scraped its reviews. In the second part, based on Fogo de Chao's reviews, visualization and prediction models are presented. Finally, comparing among models, I found `Lasso` to be the best model. 
+In wanting to demonstrate my abilities in using Data Analytic techniques, I chose one of my favoraite restaurants, **Fogo de Chao (Botson)**, to perform Web Scraping, create data visualizations, and build prediction models. As such, discussed in Part 1, I used Web Scraping to draw from reviews of the restaurant that were posted on Opentable. Based on these reviews, I then created visualization and prediction models (Part 2). After comparing the utility of various model performances, I concluded that `Lasso` is the best model for this case because it has the highest accuracy score.
 
 ## Part 1: Web Scraping
 
-In this section, I performed web scraping for Fogo de Chao's reviews on OpenTable.
+In Part 1, I conducted Web Scraping using posted reviews of Fogo de Chao (Boston) found on the website OpenTable.
 
-Here is an example of a few reviews:
+Here are two examples of reviews posted on OpenTable:
 ![](/images/website_review.jpg)
 
 First, I used **selenium** in Python to open Fogo de Chao's web page.
@@ -43,7 +43,7 @@ while (condition):
         condition = False
 ```
 
-The code above scraped review in text, ratings (stars), and dine in time in 3 separate lists. To combine all the information and prepare for data analysis, I put them into a single data set. 
+The code above scraped the reviews in text, ratings (stars), and dine-in time, placing these into 3 separate lists. In ordre to prepare for data analysis, I then combined the lists into a single data set. 
 
 ```python
 df = pd.concat([pd.DataFrame(Review),pd.DataFrame(Rating),pd.DataFrame(dine_time)],axis = 1)
@@ -52,18 +52,18 @@ df['ratings'] = df['ratings'].astype('int')
 df.to_csv('Fogo_de_Chao_review.csv')
 ```
 
-Below is a quick look of the final data set:
+Here is a quick look of the final data set:
 
 ![](/images/data.jpg)
 
 
-There are 2389 rows and 3 columns. The first column is reviews in text, such as 'I would not recommend', the second column is ratings, such as 4 stars, and the last column is when customers dined in Fogo de Chao. 
+There are 2389 rows and 3 columns. The first column is reviews in text (e.g., 'I would not recommend'), the second column is ratings (e.g., 4 stars) and the last column is the customers' dine-in time (i.e., reservation time) at Fogo de Chao. 
 
-Up till now, web scraping is completed!
+Web Scraping is now complete.
 
 ## Part 2: Data Analysis
 
-In this part, I used the data set about Fogo de Chao I scraped from OpenTable for data analysis. Before performing deeper analysis like prediction models, it is important to know the data by creating visualization. Therefore, first, I imported packages for data visualization.
+In Part 2 I used the data set (discussed above) for data analysis. Prior to performing deeper analysis like prediction models, it was important to create visualizations in order to understand what the data "looks like." Therefore, I started by importing the following packages for data visualization:
 
 ### Import data
 
@@ -76,7 +76,7 @@ import matplotlib.ticker as ticker
 from wordcloud import WordCloud, STOPWORDS
 ```
 
-Now that I have the tool, I deleted one column and created 3 variables: Year, Month, Day.
+After importing the packages, I deleted the column "Unnamed: 0" and then created 3 separate variables: Year, Month, Day.
 
 ```python
 df = pd.read_csv('Fogo_de_Chao_review.csv')
@@ -88,7 +88,7 @@ df['year'] = pd.DatetimeIndex(df['dine_in_time']).year
 df['month'] = pd.DatetimeIndex(df['dine_in_time']).month
 df['day'] = pd.DatetimeIndex(df['dine_in_time']).day
 ```
-Before visulization, let's look at the data set one more time.
+Here is a summary of what I've done so far:
 
 ![](/images/data_final.jpg)
 
@@ -98,25 +98,25 @@ To get a better understanding of how Fogo de Chao has performed, I looked at the
 
 ![](/images/year.png)
 
-Generally speaking, a higher number of reviews means a higher number of customers or service activities. The restaurant seemed to do pretty well during 2016 to 2019, but not 2020 (very likely due to COVID).
+Generally speaking, a higher number of reviews means a higher number of customers or related service activities. The restaurant seemed to do pretty well from 2016 to 2019. However, there has been a noticeable drop in reviews throughout 2020, most likely due to COVID-19.
 
 Next, I looked at the number of reviews by month.
 
 ![](/images/month.png)
 
-From this graph, we saw people are more likely to leave reviews in August, which is likey to imply a higher number of customers.
+From this graph, we can see people are more likely to leave reviews in August, which suggests that there might be higher number of customers during this month.
 
-Besides, what if we looked at months in different years?
+Next, I was interested in examining each year individually by month.
 
 ![](/images/year_month.png)
 
-Between 2016 and 2020, there is a slight trend that the number of reviews starts low at January, hitting maximum at August, decreasing afterwards and increasing again in December. This may also be an implication of customer visit patterns for Fogo de Chao.  
+Between 2016 and 2019, there is a slight trend in the number of reviews submnitted, which start low in January and increase through August (with a considerable spike in reviews during the month of August). After August, reviews begin to decrease over the next few months with a final spike in December. This may be a suggestion as to the number of customer visits per month at Fogo de Chao.  
 
-In addition, when did people like to visit within a month?
+In addition, I wanted to investigate whether or not there were particular days of the month (1st-31st) that costumers preferred to visit.
 
 ![](/images/day.png)
 
-This graph showed that people usually eat out more during the mid of the month.
+This graph showed that people are more likely to eat at Fogo de Chao during the middle of the month.
 
 Lastly, I split reviews into two parts: negative reviews(ratings <= 3) and positive reviews(ratings >= 4) and created a word cloud.
 
@@ -153,12 +153,14 @@ plt.show()
 
 ![](/images/wordcloud.png)
 
-From the negative word cloud, we can guess main complaints: too busy, too expensive, meat does not taste delicious.
+From the negative word cloud, we can formulate the main complaints: The restaurant was too busy, too expensive, and/or the meat did not taste delicious.
 
-From the positive word cloud, we can guess main compliments: good atmosphere, good service (attentive), great food.
+From the positive word cloud, we can gather the recurring compliments: The restaurant had a good atmosphere, good service (described as attentive), and had great food.
 
 ### Predictive Modeling
-The visualization offered some basic insights into Fogo de Chao's performance and consumer behavior. Now, further steps or questions rise: how are reviews and ratings related and can reviews be used to predict ratings well. So, I cleaned review text and built models that predict ratings based on customers' reviews. First, I removed punctuations, and switched characters from upper case to lower case.
+The visualizations offered some basic insights into Fogo de Chao's performance and consumer behavior. However, further questions rise: how are reviews and ratings related? Can reviews be used to predict ratings accurately? In order to address these questions, I cleaned the review text and built models that predict ratings based on the reviews.
+
+First, I removed punctuations, and switched characters from upper case to lower case.
 #### Text cleaning
 ```python
 ## Remove punctuation
@@ -172,7 +174,7 @@ df['reviews'] = df['reviews'].apply(remove_punctuation)
 df['reviews'] = df['reviews'].apply(stemming)
 ```
 
-After the text cleaning, I imported machine learning packages and defined a function that calculated accuracy of confusion matrices. This allowed model's prediction results to be within one star difference. To be more specific, if a review is 4 stars, a prediction of 3 stars or 5 stars is accurate. 
+After cleaning the text, I imported machine learning packages and defined a function that calculated accuracy of confusion matrices. This allowed the model's prediction results to be within one star difference. In other words, if a review has 4 stars, a prediction of 3 stars or 5 stars is considered accurate for this model. 
 #### Modeling
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -197,7 +199,7 @@ def right_pred_off1(cm):
 ```
 #### Create train-validating-test split
 
-The next step was to create a train-validating-test split data on a 80-10-10 basis. I trained the models on train set, selected hyperparameters on validating set, and compared models on test set. 
+The next step was to create a train-validating-test split data on a 80-10-10 basis. I trained the models using train set, selected hyperparameters on validating the set, and compared models on test set. 
 
 ```python
 df['ML_group']   = np.random.randint(100,size = df.shape[0])
@@ -207,7 +209,7 @@ inx_train         = df.ML_group<80
 inx_valid         = (df.ML_group>=80)&(df.ML_group<90)
 inx_test          = (df.ML_group>=90)
 ```
-The last step before modeling in sentiment analysis is to transform text into vectors. I used **TfidfVectorizer** to transform the text and ignored **stop words** as they appear commonly and usually do not provide useful information.
+The last step prior to modeling in sentiment analysis was to transform the text into vectors. I used **TfidfVectorizer** to transform the text and ignored **stop words** as they appear commonly and usually do not provide useful information.
 
 ```python
 corpus          = df['reviews'].to_list()
@@ -231,7 +233,7 @@ X_test    = X[np.where(inx_test) [0],:].toarray()
 
 test_score_model_off1 = {}
 ```
-After necessary preparations for modeling, I applied 8 models and below are 3 examples.
+After these necessary preparations for modeling, I applied 8 different models. Below I offer 3 examples:
 
 #### Linear Regression
 
@@ -257,7 +259,7 @@ test_score_model_off1['Linear Model'] = right_pred_off1(cm_clf)
 
 #### Lasso
 
-Here I did hyperparameter tuning to find the best penalty (alpha) for Lasso.
+Here, I performed hyperparameter tuning to find the best penalty (alpha) for Lasso.
 
 ```python
 alpha_list = [0.001, 0.01, 0.1]
@@ -343,11 +345,10 @@ test_score_model_off1['Tree'] = right_pred_off1(cm_tree)
 
 #### Model results
 
-Besides the models I showed above, I also ran other models such as Ridge regression, KNN, and Random forest. Previously, I put different models and its corresponding accuracy scores in a dictionary **test_score_model_off1**. In the end, by comparing scores among models, I found the best model in this case.
+Besides these above models, I also ran additional models, including Ridge regression, KNN, Naive Bayes, Random forest and SVC. I placed all of these models, along with their corresponding accuracy scores, into a dictionary **test_score_model_off1**. In the end, by comparing scores among models, I found that the best model in this case was Lasso, with an accuracy of 0.935. However, other models such as Ridge regression, Linear regression, SVC and Tree worked well too.
 
 ![](/images/results.png)
 
-From the results above, Lasso was the best model with an accuray of 0.935. Other models such as Ridge regression, Linear regression, SVC and Tree worked well too. 
 
 
 My full code can be found on [Github](https://github.com/changtaoshuai/Marketing_Analytics)
