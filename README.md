@@ -169,7 +169,7 @@ df['reviews'] = df['reviews'].apply(stemming)
 ```
 
 After the text cleaning, I import machine learning packages. Then we are ready to go!
-### Modeling
+#### Modeling
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import KNeighborsClassifier
