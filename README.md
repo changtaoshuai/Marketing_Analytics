@@ -1,10 +1,12 @@
 # Sentiment Analysis                                              
 
+This project combined Web scraping, data visualization, and prediction models. In the first part, I chose one of my favoraite restaurants *Fogo de Chao (Botson)** on Opentable, and scraped its reviews. In the second part, based on Fogo de Chao's reviews, visualization and prediction models are presented. Finally, comparing among models, I found `Lasso` to be the best model. 
+
 ## Part 1: Web Scraping
 
-In this section, I perform web scraping on OpenTable for restaurant reviews. Here I chose Fogo de Chao in Boston.
+In this section, I performed web scraping for Fogo de Chao's reviews on OpenTable.
 
-Here is an example of reviews:
+Here is an example of a few reviews:
 ![](/images/website_review.jpg)
 
 First, I used **selenium** in Python to open Fogo de Chao's web page.
@@ -20,7 +22,7 @@ url = 'https://www.opentable.com/r/fogo-de-chao-brazilian-steakhouse-boston?orig
 driver.get(url)
 ```
 
-Next, I use x path to get each individual review and **Beautifulsoup** to transform the data structure. After I look into the data structure and find common patterns, I use regular expression to extract review text, ratings (stars), and dine in time. For example, review text follows *style=""* and is followed by *</p>*. So I want to extract everything in the middle ((.*?)). 
+Next, I used x path to get reviews and used **Beautifulsoup** to transform the data structure. After finding common patterns in Beautifulsoup, I used regular expression to extract review text, ratings (stars), and dine in time. For example, review text follows *style=""* and is followed by *</p>*. So I extracted everything in the middle using ((.*?)). 
 
 ```python
 Review = []
@@ -41,7 +43,7 @@ while (condition):
         condition = False
 ```
 
-Now that I have review text, ratings (stars), and dine in time in 3 separate lists, it is easy to transform them into a single data set.
+The code above scraped review in text, ratings (stars), and dine in time in 3 separate lists. To combine all the information and prepare for data analysis, I put them into a single data set. 
 
 ```python
 df = pd.concat([pd.DataFrame(Review),pd.DataFrame(Rating),pd.DataFrame(dine_time)],axis = 1)
@@ -50,17 +52,19 @@ df['ratings'] = df['ratings'].astype('int')
 df.to_csv('Fogo_de_Chao_review.csv')
 ```
 
-The final data set looks like this (2389 rows in total):
+Below is a quick look of the final data set:
 
 ![](/images/data.jpg)
 
 
-Now, web scraping is completed!
+There are 2389 rows and 3 columns. The first column is reviews in text, such as 'I would not recommend', the second column is ratings, such as 4 stars, and the last column is when customers dined in Fogo de Chao. 
+
+Up till now, web scraping is completed!
 
 ## Part 2: Data Analysis
 
+In this part, I used the data set about Fogo de Chao I scraped from OpenTable for data analysis. Before performing deeper analysis like prediction models, it is important to know the data by creating visualization. Therefore, first, I imported packages for data visualization.
 
-In this part, I will use the data set I scraped from OpenTable for data analysis. First, import packages for data visualization.
 ### Import data
 
 ```python
@@ -72,7 +76,7 @@ import matplotlib.ticker as ticker
 from wordcloud import WordCloud, STOPWORDS
 ```
 
-Now that I have the tool, I delete one column and create 3 variables: Year, Month, Day for visualization.
+Now that I have the tool, I deleted one column and created 3 variables: Year, Month, Day.
 
 ```python
 df = pd.read_csv('Fogo_de_Chao_review.csv')
@@ -90,31 +94,31 @@ Before visulization, let's look at the data set one more time.
 
 ### Exploratory data analysis
 
-To get a better understanding of how Fogo de Chao has performed, one important way is to look at the number of reviews by each year.
+To get a better understanding of how Fogo de Chao has performed, I looked at the number of reviews by each year.
 
 ![](/images/year.png)
 
-Generally speaking, a higher number of reviews means a higher number of customers or service activities. It seems to do pretty well during 2016 to 2019, but not 2020 (very likely due to COVID).
+Generally speaking, a higher number of reviews means a higher number of customers or service activities. The restaurant seemed to do pretty well during 2016 to 2019, but not 2020 (very likely due to COVID).
 
-Next, I look at the number of reviews by month.
+Next, I looked at the number of reviews by month.
 
 ![](/images/month.png)
 
-From this graph, people are more likely to leave reviews in August, implying a higher amount of customers.
+From this graph, we saw people are more likely to leave reviews in August, which is likey to imply a higher number of customers.
 
-Next, is there any difference among different years?
+Besides, what if we looked at months in different years?
 
 ![](/images/year_month.png)
 
 Between 2016 and 2020, there is a slight trend that the number of reviews starts low at January, hitting maximum at August, decreasing afterwards and increasing again in December. This may also be an implication of customer visit patterns for Fogo de Chao.  
 
-In addition, when do people like to visit within a month?
+In addition, when did people like to visit within a month?
 
 ![](/images/day.png)
 
-It shows that people usually eat out more during the mid of the month.
+This graph showed that people usually eat out more during the mid of the month.
 
-Lastly, I split reviews into two parts: negative reviews(ratings <= 3) and positive reviews(ratings >= 4) and create a word cloud.
+Lastly, I split reviews into two parts: negative reviews(ratings <= 3) and positive reviews(ratings >= 4) and created a word cloud.
 
 ```python
 ## Word Cloud
@@ -154,7 +158,7 @@ From the negative word cloud, we can guess main complaints: too busy, too expens
 From the positive word cloud, we can guess main compliments: good atmosphere, good service (attentive), great food.
 
 ### Predictive Modeling
-After some visualization, I want to predict ratings based on customers' reviews. The first step is text cleaning. Here I simply remove punctuations, and switch to lower case.
+The visualization offered some basic insights into Fogo de Chao's performance and consumer behavior. Now, further steps or questions rise: how are reviews and ratings related and can reviews be used to predict ratings well. So, I cleaned review text and built models that predict ratings based on customers' reviews. First, I removed punctuations, and switched characters from upper case to lower case.
 #### Text cleaning
 ```python
 ## Remove punctuation
@@ -168,7 +172,7 @@ df['reviews'] = df['reviews'].apply(remove_punctuation)
 df['reviews'] = df['reviews'].apply(stemming)
 ```
 
-After the text cleaning, I import machine learning packages. Then we are ready to go!
+After the text cleaning, I imported machine learning packages and defined a function that calculated accuracy of confusion matrices. This allowed model's prediction results to be within one star difference. To be more specific, if a review is 4 stars, a prediction of 3 stars or 5 stars is accurate. 
 #### Modeling
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -193,7 +197,7 @@ def right_pred_off1(cm):
 ```
 #### Create train-validating-test split
 
-In predictive modeling, train-test split is essential. I split data on a 80-10-10 basis.
+The next step was to create a train-validating-test split data on a 80-10-10 basis. I trained the models on train set, selected hyperparameters on validating set, and compared models on test set. 
 
 ```python
 df['ML_group']   = np.random.randint(100,size = df.shape[0])
@@ -203,7 +207,7 @@ inx_train         = df.ML_group<80
 inx_valid         = (df.ML_group>=80)&(df.ML_group<90)
 inx_test          = (df.ML_group>=90)
 ```
-Next, one important step in sentiment analysis is to transform text into vectors. I use **TfidfVectorizer** to transform the text and ignore **stop words** as they appear commonly and usually do not provide useful information.
+The last step before modeling in sentiment analysis is to transform text into vectors. I used **TfidfVectorizer** to transform the text and ignored **stop words** as they appear commonly and usually do not provide useful information.
 
 ```python
 corpus          = df['reviews'].to_list()
@@ -227,8 +231,7 @@ X_test    = X[np.where(inx_test) [0],:].toarray()
 
 test_score_model_off1 = {}
 ```
-
-After splitting the data set into 3 groups, it's time to apply different machine learning models. I will show some examples below.
+After necessary preparations for modeling, I applied 8 models and below are 3 examples.
 
 #### Linear Regression
 
@@ -254,7 +257,7 @@ test_score_model_off1['Linear Model'] = right_pred_off1(cm_clf)
 
 #### Lasso
 
-Here I did some parameter tuning to find the best penalty (alpha) for Lasso.
+Here I did hyperparameter tuning to find the best penalty (alpha) for Lasso.
 
 ```python
 alpha_list = [0.001, 0.01, 0.1]
@@ -339,10 +342,9 @@ test_score_model_off1['Tree'] = right_pred_off1(cm_tree)
 ```
 
 #### Model results
-I use confusion matrix to evaluate model performance. Besides, I allow model's prediction results to be within one star difference. To be more specific, if a review is 4 stars, a prediction of 3 stars or 5 stars is accurate.
 
-Besides the models I showed above, I also ran other models such as Ridge regression, KNN, and Random forest. Previously, I put different models and its corresponding accuracy scores in a dictionary **test_score_model_off1**. In the end, by comparing scores among models, we find the best model in this case.
+Besides the models I showed above, I also ran other models such as Ridge regression, KNN, and Random forest. Previously, I put different models and its corresponding accuracy scores in a dictionary **test_score_model_off1**. In the end, by comparing scores among models, I found the best model in this case.
 
 ![](/images/results.png)
 
-From the results above, Lasso is the best model with an accuray of 0.935. Other models such as Ridge regression, Linear regression, SVC and Tree work well too. 
+From the results above, Lasso was the best model with an accuray of 0.935. Other models such as Ridge regression, Linear regression, SVC and Tree worked well too. 
