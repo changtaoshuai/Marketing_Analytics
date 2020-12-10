@@ -171,7 +171,6 @@ def remove_punctuation(input_text):
 
 df['reviews'] = [i.lower() for i in df['reviews']]
 df['reviews'] = df['reviews'].apply(remove_punctuation)
-df['reviews'] = df['reviews'].apply(stemming)
 ```
 
 After cleaning the text, I imported machine learning packages and defined a function that calculated accuracy of confusion matrices. This allowed the model's prediction results to be within one star difference. In other words, if a review has 4 stars, a prediction of 3 stars or 5 stars is considered accurate for this model. 
