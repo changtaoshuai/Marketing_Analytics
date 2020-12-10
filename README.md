@@ -348,3 +348,6 @@ Besides the models I showed above, I also ran other models such as Ridge regress
 ![](/images/results.png)
 
 From the results above, Lasso was the best model with an accuray of 0.935. Other models such as Ridge regression, Linear regression, SVC and Tree worked well too. 
+
+
+My full code can be found on [Github](https://github.com/changtaoshuai/Marketing_Analytics)
